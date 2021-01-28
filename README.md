@@ -1,5 +1,5 @@
 # LazyFelina Addon
-LazyFelina is in the beta phase, but is avalible for anyone to use. I create it with the help of Darfall's scripting tutorials.
+LazyFelina is in the beta phase, but is avalible for anyone to use. I create it with the help of Darkfall's scripting tutorials.
 
 ## Thank you:
   * BreadcrumbIsTaken and Therawfish for helping me when I had a issue with the sunbeams node
