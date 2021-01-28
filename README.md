@@ -12,4 +12,5 @@ Place for the LazyFelina Addon. Here, you can report bugs and suggest new featur
 To install, install the .py script. To update, remove the addon and reinstall
 
 For any keybinds, make sure you go into keymap, 3D View, 3D View Global, and disable the keybind. Then reenable it.
-Example: https://user-images.githubusercontent.com/75058058/103142228-76c42600-46c5-11eb-9566-6b252529cb2d.png
+
+![](103142228-76c42600-46c5-11eb-9566-6b252529cb2d.png)
