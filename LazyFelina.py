@@ -1,20 +1,29 @@
-bl_info = {
-    "name" : "Lazy Felina",
-    "author" : "StandingPad Animations",
-    "version" : (5, 1),
-    "blender" : (2, 91, 0),
-    "location" : "View3D > Toolbar > Add Object",
-    "description" : "Shortcut stuff and be lazy. Felina is a reference to a species from Songs of War made by Black Plasma Studios, I highly recomend it",
-    "warning" : "Beta Phase, so there may be some bugs",
-    "wiki_url" : "",
-    "category" : "",    
-}
+# ##### BEGIN GPL LICENSE BLOCK #####
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software Foundation,
+#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+# ##### END GPL LICENSE BLOCK #####
+
 
 import bpy
+import os 
 from bpy.types import Panel, Operator
+from . import addon_updater_ops 
 
-#render settings
 
+#main panels
 class Felina(bpy.types.Panel):
     bl_label = "LazyFelina"
     bl_idname = "Lazy_PT_felina"
@@ -22,120 +31,187 @@ class Felina(bpy.types.Panel):
     bl_region_type = 'UI'
     bl_category = 'Lazy Felina'
     
-    def draw(self, context):
-        
-        
+    def draw_header(self, context):
         layout = self.layout
+        layout.label(text="", icon='GRAPH')
     
     
-    
-#cycles render settings---------------------------------------------------------------------------------------------    
-    
-class CyclesRender(bpy.types.Panel):
-    bl_label = "Cycles Render Settings"
-    bl_idname = "Cycles_PT_Render"
+    def draw(self, context):
+        layout = self.layout
+        addon_updater_ops.check_for_update_background(context)
+        addon_updater_ops.update_notice_box_ui(self, context)
+        
+        
+        
+        
+class Comp_PT_set(bpy.types.Panel):
+    bl_label = "Compositing Shortcuts"
+    bl_idname = "Comp_PT_felina"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'Lazy Felina'
     bl_parent_id = 'Lazy_PT_felina'
     bl_options = {'DEFAULT_CLOSED'}
-   
     
+    def draw_header(self, context):
+        layout = self.layout
+        layout.label(text="", icon='SHADERFX')
     
     
     def draw(self, context):
-        
-        
         layout = self.layout
-        layout.scale_y = .95
+    
+
+    
+#render settings---------------------------------------------------------------------------------------------------  
+class Render_PT_UI(Panel): 
+    bl_label = "Quick Render Settings"
+    bl_idname = "Render_PT_felina_UI"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = 'render'
+    bl_options = {'DEFAULT_CLOSED'}
+    bl_order = 1
+    
+    
+    
+    
+    def draw_header(self, context):
+        layout = self.layout
+        engine = bpy.context.scene.render.engine
+        layout.label(text="", icon='BLENDER')
+            
+        
+    
+    
+    def draw(self, context):
+        layout = self.layout
         render = bpy.context.scene.cycles
         renderview = bpy.context.scene.cycles
         light = bpy.context.scene.world.light_settings
-
-        
-
-
-        row = layout.row()
-        row.label(text= "Cycles Render Settings", icon= 'RESTRICT_RENDER_OFF')
-        row = layout.row()
-        row.label(text= "Render")
-        layout.prop(render, "samples")
-        row = layout.row()
-        row.label(text= "Viewport")
-        layout.prop(renderview, "preview_samples")
-        row = layout.row()
-        row.label(text= "Total Light Bounces")
-        layout.prop(render, "max_bounces")
-        row = layout.row()
-        row.label(text= "Clamping Indirect")
-        layout.prop(render, "sample_clamp_indirect")
-        row = layout.row()
-        row.label(text= "Clamping Direct")
-        layout.prop(render, "sample_clamp_direct")
-        layout.prop(light, "use_ambient_occlusion")
-        layout.prop(light, "ao_factor")
-       
-        
-        
-        
-    
-        
-#eevee render settings-------------------------------------------------------------------------------------------
-    
-class EEVEERender(bpy.types.Panel):
-    bl_label = "EEVEE Render Settings"
-    bl_idname = "EEVEERender"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
-    bl_category = 'Lazy Felina'
-    bl_parent_id = 'Lazy_PT_felina'
-    bl_options = {'DEFAULT_CLOSED'}
-    
-    
-    
-    def draw(self, context):
-        
-        
-        layout = self.layout
-        layout.scale_y = .95
         erender = bpy.context.scene.eevee
         erenderview = bpy.context.scene.eevee
+        engine = bpy.context.scene.render.engine
+         
+
         
         
-        
-        row = layout.row()
-        row.label(text= "EEVEE Render Settings", icon= 'BLENDER')
-        row = layout.row()
-        layout.prop(erender, "taa_render_samples")
-        row = layout.row()
-        layout.prop(erenderview, "taa_samples")
-        row = layout.row()
-        layout.prop(erenderview, "use_gtao")
-        row = layout.row()
-        layout.prop(erenderview, "gtao_distance")
-        row = layout.row()
-        layout.prop(erenderview, "use_bloom")
-        row = layout.row()
-        layout.prop(erenderview, "bloom_threshold")
-        row = layout.row()
-        layout.prop(erenderview, "bloom_color")
-        row = layout.row()
-        layout.prop(erenderview, "volumetric_tile_size")
-        row = layout.row()
-        layout.prop(erenderview, "use_motion_blur")
-        row = layout.row()
-        layout.prop(erenderview, "motion_blur_position")
-        row = layout.row()
-        layout.prop(erenderview, "use_volumetric_shadows")
-       
-       
-       
+        if engine == 'CYCLES': 
+                      
+            
+            row = layout.row()
+            box = layout.box()
+            box.label(text= "Render Settings")
+            row = box.row()
+            
+            
+            #samples
+            row.prop(render, "samples")
+            row.prop(renderview, "preview_samples")
+            layout.separator(factor= .5)
+            
+            #Light bounces
+            row = box.row()
+            row.prop(render, "max_bounces")
+            
+            
+            #Clamping
+            row = box.row()
+            row.prop(render, "sample_clamp_indirect")
+            row.prop(render, "sample_clamp_direct")
+            
+            
+            #AO
+            row = box.row()
+            row.prop(light, "use_ambient_occlusion")
+            
+            
+            if light.use_ambient_occlusion == True:
+                box.prop(light, "ao_factor")
+                row.label(icon= 'OUTLINER_OB_LIGHT') 
+                
+            elif light.use_ambient_occlusion == False:
+                row.label(icon= 'LIGHT_DATA') 
+            
+            
+            
+        if engine == 'BLENDER_EEVEE':
+            
+            #Samples
+            box = layout.box()
+            row = box.row()
+            
+            row.prop(erender, "taa_render_samples")
+            row.prop(erenderview, "taa_samples")
+            
+            
+            
+            #AO
+            row = box.row()
+            row.prop(erenderview, "use_gtao")
+            
+            if erenderview.use_gtao == True:
+                box.prop(erenderview, "gtao_distance")
+                row.label(icon= "OUTLINER_OB_LIGHT")
+                
+                
+                
+            elif erenderview.use_gtao == False:
+                row.label(icon= 'LIGHT_DATA')
+             
+             
+            #Bloom   
+            row = box.row()
+            row.prop(erenderview, "use_bloom")
+            
+            if erenderview.use_bloom == True:
+                
+                
+                box.prop(erenderview, "bloom_threshold", text= "Bloom Threshold")
+                box.prop(erenderview, "bloom_color", text= "Bloom Color")
+                row.label(icon= 'GHOST_ENABLED')
+                
+            elif erenderview.use_bloom == False:
+                row.label(icon= 'GHOST_DISABLED')
+            
+            
+            #Tile Size
+            row = box.row()
+            row.label(icon= 'OUTLINER_DATA_LIGHTPROBE')
+            row.prop(erenderview, "volumetric_tile_size")
+            
+            
+            
+            #motion Blur
+            row = box.row()
+            row.prop(erenderview, "use_motion_blur")
+            
+            if erenderview.use_motion_blur == True:
+                box.prop(erenderview, "motion_blur_position")
+                row.label(icon= 'FORCE_TURBULENCE')
+                
+                
+            elif erenderview.use_motion_blur == False:
+                row.label(icon= 'FORCE_FORCE')
+                
+            #Volumetric Shadows
+            row = box.row()
+            row.prop(erenderview, "use_volumetric_shadows")
+            
+            if erenderview.use_volumetric_shadows == True:
+                box.prop(erenderview, "volumetric_shadow_samples")
+                row.label(icon= 'OUTLINER_OB_VOLUME')
+                
+                
+            elif erenderview.use_volumetric_shadows == False:
+                row.label(icon= 'OUTLINER_DATA_VOLUME') 
+            
 
 #text panel--------------------------------------------------------------------------------------------------------        
         
-
+#Dialog box name, icon, and button name thingy
 class TextTool(bpy.types.Panel):
-    bl_label = "Text Tool"
+    bl_label = "TextTool"
     bl_idname = "OBJECT_PT_text"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -143,27 +219,66 @@ class TextTool(bpy.types.Panel):
     bl_parent_id = 'Lazy_PT_felina'
     bl_options = {'DEFAULT_CLOSED'}
     
-
+    def draw_header(self, context):
+        layout = self.layout
+        layout.label(text="", icon='FONTPREVIEW')
+    
+    
     def draw(self, context):
         layout = self.layout
      
         
         row = layout.row()
-        row.operator("wm.textop", text= "Text Tool", icon= 'FILE_FONT')
+        row.operator("wm.textop", text= "TextTool", icon= 'FILE_FONT')
         
         
         
         
         
-        
+#dialog box operator         
 class WM_OT_textOp(bpy.types.Operator):
-    bl_label = "Text Tool Operator"
+    
+    bl_label = "LazyFelina TextTool"
     bl_idname = "wm.textop"  
     
-    text = bpy.props.StringProperty(name= "Enter Text:")
+    
+    
+    #the dialog box options 
+    text = bpy.props.StringProperty(name= "Enter Text")
     center = bpy.props.BoolProperty(name= "Center Origin", default= False)
     extrude = bpy.props.BoolProperty(name= "Extrude", default= False)
     extrude_amount = bpy.props.FloatProperty(name= "Extrude Amount:", default= 0)
+    
+    
+    
+    def draw(self, context):
+        layout = self.layout
+
+        layout.prop(self, "text")
+        layout.separator(factor= 1)
+        
+        box = layout.box()
+        
+        row = box.row()
+        row.prop(self, "center")
+        
+        if self.center == True:
+            row.label(text= "Origin: Centered", icon= 'PIVOT_CURSOR')
+            
+        elif self.center == False:
+            row.label(text= "Origin: Default", icon= 'CURSOR')
+        
+        row = box.row()
+        row.prop(self, "extrude")
+        
+        if self.extrude == True:
+            box.prop(self, "extrude_amount")
+            row.label(text= "Can Extrude", icon= 'EDITMODE_HLT')
+            
+        elif self.extrude == False:
+            row.label(text= "Can't Extrude", icon= 'OBJECT_DATAMODE')
+    
+
    
     
     def execute(self, context):
@@ -173,10 +288,18 @@ class WM_OT_textOp(bpy.types.Operator):
         e = self.extrude
         ea = self.extrude_amount
         
-        bpy.ops.object.text_add(enter_editmode=True, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+        
+        #How the tool creates text and does other actions
+        bpy.ops.object.text_add(enter_editmode=True, scale=(1, 1, 1))
         bpy.ops.font.delete(type='PREVIOUS_WORD')
         bpy.ops.font.text_insert(text= t)
         bpy.ops.object.editmode_toggle()
+        
+        #how the dialog box resets
+        self.text = ''
+        self.extrude = False
+        self.center = False
+        self.extrude_amount = 0
         
         
         
@@ -188,7 +311,7 @@ class WM_OT_textOp(bpy.types.Operator):
         if e == True:
             bpy.context.object.data.extrude = ea
 
-            
+        
 
         return {'FINISHED'}
     
@@ -198,6 +321,9 @@ class WM_OT_textOp(bpy.types.Operator):
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
          
+
+
+
 
 
 #mist--------------------------------------------------------------------------------------------------------------
@@ -215,6 +341,7 @@ def mist_comp_action(context):
     
     map_node = tree.nodes.new('CompositorNodeMapValue')
     map_node.location = (25, 0)
+    
     
     link = tree.links.new
     
@@ -241,24 +368,32 @@ class Mist_PT_main_panel(Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Lazy Felina"
-    bl_parent_id = 'Lazy_PT_felina'
+    bl_parent_id = 'Comp_PT_felina'
     bl_options = {'DEFAULT_CLOSED'}
+    
+    
+    
+    
+    def draw_header(self, context):
+        layout = self.layout
+        layout.label(text="", icon='BOIDS')
 
+    
     def draw(self, context):
         layout = self.layout
         scene = context.scene
         world = scene.world.mist_settings
+        vl = scene.view_layers["View Layer"]
         
         
         layout.prop(world, "start")
         layout.prop(world, "depth")
         layout.prop(world, "falloff")
+            
         
-        
-        
-        
+            
 
-        layout.operator("mist.myop_operator")
+        layout.operator("mist.myop_operator", icon= 'BOIDS')
 
 
 class Mist_OT_my_op(Operator):
@@ -356,8 +491,13 @@ class Boosh_PT_main_panel(Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Lazy Felina"
-    bl_parent_id = 'Lazy_PT_felina'
+    bl_parent_id = 'Comp_PT_felina'
     bl_options = {'DEFAULT_CLOSED'}
+    
+    def draw_header(self, context):
+        layout = self.layout
+        layout.label(text="", icon='FORCE_BOID')
+ 
 
     def draw(self, context):
         layout = self.layout
@@ -373,7 +513,7 @@ class Boosh_PT_main_panel(Panel):
         
         
 
-        layout.operator("boosh.myop_operator")
+        layout.operator("boosh.myop_operator", icon= 'FORCE_BOID')
 
 
 class Boosh_OT_my_op(Operator):
@@ -470,8 +610,14 @@ class AdvanceMist_PT_main_panel(Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Lazy Felina"
-    bl_parent_id = 'Lazy_PT_felina'
+    bl_parent_id = 'Comp_PT_felina'
     bl_options = {'DEFAULT_CLOSED'}
+    
+    def draw_header(self, context):
+        layout = self.layout
+        layout.label(text="", icon='FORCE_FLUIDFLOW')
+    
+    
 
     def draw(self, context):
         layout = self.layout
@@ -487,7 +633,7 @@ class AdvanceMist_PT_main_panel(Panel):
         
         
 
-        layout.operator("advancemist.myop_operator")
+        layout.operator("advancemist.myop_operator", icon= 'FORCE_FLUIDFLOW')
 
 
 class advanceMist_OT_my_op(Operator):
@@ -545,9 +691,6 @@ def sunbeams_comp_action(context):
     mix2_node = tree.nodes.new('CompositorNodeMixRGB')
     mix2_node.location = (1000, 200)
     
-    cr_node = tree.nodes.new('CompositorNodeValToRGB')
-    cr_node.location = (-50, 40)
-    
     sunbeams_node = tree.nodes.new('CompositorNodeSunBeams')
     sunbeams_node.location = (200, -200)
     
@@ -561,7 +704,6 @@ def sunbeams_comp_action(context):
    
     
     link = tree.links.new
-    link(cr_node.outputs[0], sunbeams_node.inputs[0])
     link(sunbeams_node.outputs[0], blur_node.inputs[0])
     link(blur_node.outputs[0], mix2_node.inputs[0])
     link(mix2_node.outputs[0], mix_node.inputs[1])
@@ -590,9 +732,14 @@ class SunBeams_PT_main_panel(Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Lazy Felina"
-    bl_parent_id = 'Lazy_PT_felina'
+    bl_parent_id = 'Comp_PT_felina'
     bl_options = {'DEFAULT_CLOSED'}
 
+    def draw_header(self, context):
+        layout = self.layout
+        layout.label(text="", icon='GP_MULTIFRAME_EDITING')
+    
+    
     def draw(self, context):
         layout = self.layout
         scene = context.scene
@@ -601,7 +748,7 @@ class SunBeams_PT_main_panel(Panel):
          
         
 
-        layout.operator("sunbeams.myop_operator")
+        layout.operator("sunbeams.myop_operator", icon= 'GP_MULTIFRAME_EDITING')
 
 
 class SunBeams_OT_my_op(Operator):
@@ -612,7 +759,7 @@ class SunBeams_OT_my_op(Operator):
         
         
         
-        self.report({'ERROR'}, "Check Compositor, connect the image into the colorramp and both the mix and add nodes. Slide the black tab on the colorramp to isolate the parts that are effected by sunbeams.")
+        self.report({'ERROR'}, "Check Compositor, connect the image in both the mix and add nodes. Connect the enviroment pass in the sun beams node.")
         
         scene = context.scene
         camera = bpy.data.cameras['Camera']
@@ -631,6 +778,8 @@ class SunBeams_OT_my_op(Operator):
         
     
         context.scene.use_nodes = True
+        vl.use_pass_environment = True
+
      
         
         
@@ -640,47 +789,68 @@ class SunBeams_OT_my_op(Operator):
         
         return {'FINISHED'}
     
-
-
-
-
-#register---------------------------------------------------------------------------------------------------------------
-
-def register():
-    bpy.utils.register_class(Felina)
-    bpy.utils.register_class(CyclesRender)
-    bpy.utils.register_class(EEVEERender)
-    bpy.utils.register_class(TextTool)
-    bpy.utils.register_class(WM_OT_textOp)
-    bpy.utils.register_class(Mist_PT_main_panel)
-    bpy.utils.register_class(Mist_OT_my_op)
-    bpy.utils.register_class(Boosh_PT_main_panel)
-    bpy.utils.register_class(Boosh_OT_my_op)
-    bpy.utils.register_class(AdvanceMist_PT_main_panel)
-    bpy.utils.register_class(advanceMist_OT_my_op)
-    bpy.utils.register_class(SunBeams_PT_main_panel)
-    bpy.utils.register_class(SunBeams_OT_my_op)
+#sky--------------------------------------------------------------------------------------------------------------
+class Sky_PT_main_panel(Panel):
+    bl_label = "Sky"
+    bl_idname = "Sky_PT_main_panel"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = "Lazy Felina"
+    bl_parent_id = 'Lazy_PT_felina'
+    bl_options = {'DEFAULT_CLOSED'}
     
-def unregister():
-     bpy.utils.unregister_class(Felina)
-     bpy.utils.unregister_class(CyclesRender)
-     bpy.utils.unregister_class(EEVEERender)
-     bpy.utils.unregister_class(TextTool)
-     bpy.utils.unregister_class(WM_OT_textOp)
-     bpy.utils.unregister_class(Mist_PT_main_panel)
-     bpy.utils.unregister_class(Mist_OT_my_op)
-     bpy.utils.unregister_class(Boosh_PT_main_panel)
-     bpy.utils.unregister_class(Boosh_OT_my_op)
-     bpy.utils.unregister_class(AdvanceMist_PT_main_panel)
-     bpy.utils.unregister_class(advanceMist_OT_my_op)
-     bpy.utils.unregister_class(SunBeams_PT_main_panel)
-     bpy.utils.unregister_class(SunBeams_OT_my_op)
     
-     
-     
-if __name__  == "__main__":
-    register() 
     
+    
+    def draw_header(self, context):
+        layout = self.layout
+        layout.label(text="", icon='LIGHT_SUN')
+
+    
+    def draw(self, context):
+        layout = self.layout
+        
+        layout.operator("sky.myop_operator", icon= 'LIGHT_SUN')
+
+
+
+class Sky_OT_my_op(Operator):
+    bl_label = "Sky"
+    bl_idname = "sky.myop_operator"
+    
+    def execute(self, context):
+         
+        
+        world_name = "Sky"
+        filename = "LazyFelina/EpicSky.blend"
+        engine = bpy.context.scene.render.engine
+        
+        if engine == 'CYCLES':
+
+            filename = os.path.join(os.path.dirname(os.path.dirname(__file__)), filename)
+            
+            bpy.ops.wm.append(
+                            filename=world_name,
+                            directory=bpy.path.abspath(f"//{filename}\\World")
+                )
+            
+            bpy.context.scene.world = bpy.data.worlds.get("Sky")
+        
+        if engine == 'BLENDER_EEVEE':
+            self.report({'ERROR'}, "Cycles Only >:C")
+        
+        
+        return {'FINISHED'}
+
+
+
+
+
+
+
+
+
+
     
     
     
