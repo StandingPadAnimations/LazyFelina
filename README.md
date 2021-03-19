@@ -1,4 +1,5 @@
 # LazyFelina Addon
+##Outdated, please use the new wiki: https://sites.google.com/view/standingpadanimations/Development-Stuff/lazyfelina-wiki
 LazyFelina is in the beta phase, but is avalible for anyone to use. I create it with the help of Darkfall's scripting tutorials.
 
 ## Thank you:
